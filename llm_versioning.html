@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Workshop Module: Logging &amp; Version Control for Computational Research &#8212; Kellogg Research Support 2025 Summer PhD Workshop</title>
+    <title>LLM Logging &#8212; Kellogg Research Support 2025 Summer PhD Workshop</title>
   
   
   
@@ -65,8 +65,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'llm_versioning';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Workshop Module: LLM Testing Strategies for Business Research" href="llm_testing.html" />
-    <link rel="prev" title="LLM Simulate" href="llm_simulate.html" />
+    <link rel="next" title="LLM Testing" href="llm_testing.html" />
+    <link rel="prev" title="LLM Simulation" href="llm_simulate.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -169,10 +169,10 @@ const thebe_selector_output = ".output, .cell_output"
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">LLM Applications</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="llm_extract.html">LLM Extract</a></li>
-<li class="toctree-l1"><a class="reference internal" href="llm_simulate.html">LLM Simulate</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Workshop Module: Logging &amp; Version Control for Computational Research</a></li>
-<li class="toctree-l1"><a class="reference internal" href="llm_testing.html">Workshop Module: LLM Testing Strategies for Business Research</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm_extract.html">LLM Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm_simulate.html">LLM Simulation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">LLM Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm_testing.html">LLM Testing</a></li>
 </ul>
 
     </div>
@@ -356,7 +356,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Workshop Module: Logging & Version Control for Computational Research</h1>
+    <h1>LLM Logging</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -366,12 +366,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-1-logging-your-work">Part 1: Logging Your Work</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging-your-work">Logging Your Work</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-logging-matters">Why Logging Matters</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-task-log-a-simple-llm-prompt">Example Task: Log a Simple LLM Prompt</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-2-version-control-with-git">Part 2: Version Control with Git</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-control-with-git">Version Control with Git</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-use-git">Why Use Git</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-git-demo">Quick Git Demo</a></li>
 </ul>
@@ -388,10 +388,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="workshop-module-logging-version-control-for-computational-research">
-<h1>Workshop Module: Logging &amp; Version Control for Computational Research<a class="headerlink" href="#workshop-module-logging-version-control-for-computational-research" title="Permalink to this heading">#</a></h1>
-<section id="part-1-logging-your-work">
-<h2>Part 1: Logging Your Work<a class="headerlink" href="#part-1-logging-your-work" title="Permalink to this heading">#</a></h2>
+  <section class="tex2jax_ignore mathjax_ignore" id="llm-logging">
+<h1>LLM Logging<a class="headerlink" href="#llm-logging" title="Permalink to this heading">#</a></h1>
+<section id="logging-your-work">
+<h2>Logging Your Work<a class="headerlink" href="#logging-your-work" title="Permalink to this heading">#</a></h2>
 <section id="why-logging-matters">
 <h3>Why Logging Matters<a class="headerlink" href="#why-logging-matters" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
@@ -522,8 +522,8 @@ Logged interaction to logs/logfile_2025-06-18.jsonl
 </div>
 </section>
 </section>
-<section id="part-2-version-control-with-git">
-<h2>Part 2: Version Control with Git<a class="headerlink" href="#part-2-version-control-with-git" title="Permalink to this heading">#</a></h2>
+<section id="version-control-with-git">
+<h2>Version Control with Git<a class="headerlink" href="#version-control-with-git" title="Permalink to this heading">#</a></h2>
 <section id="why-use-git">
 <h3>Why Use Git<a class="headerlink" href="#why-use-git" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
@@ -611,7 +611,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">LLM Simulate</p>
+        <p class="prev-next-title">LLM Simulation</p>
       </div>
     </a>
     <a class="right-next"
@@ -619,7 +619,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Workshop Module: LLM Testing Strategies for Business Research</p>
+        <p class="prev-next-title">LLM Testing</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -638,12 +638,12 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-1-logging-your-work">Part 1: Logging Your Work</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging-your-work">Logging Your Work</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-logging-matters">Why Logging Matters</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-task-log-a-simple-llm-prompt">Example Task: Log a Simple LLM Prompt</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#part-2-version-control-with-git">Part 2: Version Control with Git</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-control-with-git">Version Control with Git</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-use-git">Why Use Git</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-git-demo">Quick Git Demo</a></li>
 </ul>
