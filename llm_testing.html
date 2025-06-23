@@ -1,0 +1,939 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Workshop Module: LLM Testing Strategies for Business Research &#8212; Kellogg Research Support 2025 Summer PhD Workshop</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'llm_testing';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Workshop Module: Logging &amp; Version Control for Computational Research" href="llm_versioning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="welcome.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Kellogg Research Support 2025 Summer PhD Workshop - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Kellogg Research Support 2025 Summer PhD Workshop - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="welcome.html">
+                    Welcome to 2025 PhD Workshop!
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">LLM Applications</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="llm_extract.html">LLM Extract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm_simulate.html">LLM Simulate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm_versioning.html">Workshop Module: Logging &amp; Version Control for Computational Research</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Workshop Module: LLM Testing Strategies for Business Research</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/rs-kellogg/krs-2025_phd_workshop" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/rs-kellogg/krs-2025_phd_workshop/issues/new?title=Issue%20on%20page%20%2Fllm_testing.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/llm_testing.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Workshop Module: LLM Testing Strategies for Business Research</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#llm-testing">LLM Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-extract-infrmation-from-earning-report">Case 1: Extract infrmation from earning report</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-generate-marketing-materials">Case 2: Generate marketing materials</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-3-check-classification-outcome">Case 3: Check classification outcome</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="workshop-module-llm-testing-strategies-for-business-research">
+<h1>Workshop Module: LLM Testing Strategies for Business Research<a class="headerlink" href="#workshop-module-llm-testing-strategies-for-business-research" title="Permalink to this heading">#</a></h1>
+<section id="llm-testing">
+<h2>LLM Testing<a class="headerlink" href="#llm-testing" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Correctness &amp; Accuracy</p>
+<ul>
+<li><p><strong>Unit tests</strong>: Check exact match against expected answers.</p></li>
+<li><p><strong>Classification metrics</strong>: Compare predicted labels to ground truth (e.g. accuracy, F1).</p></li>
+<li><p><strong>Factuality checks</strong>: Validate claims against external sources; flag hallucinations.</p></li>
+</ul>
+</li>
+<li><p>Consistency &amp; Stability</p>
+<ul>
+<li><p><strong>Regression testing</strong>: Detect output changes over time or between model versions.</p></li>
+<li><p><strong>Prompt sensitivity</strong>: Assess how small wording or formatting changes affect results.</p></li>
+<li><p><strong>Reproducibility</strong>: Ensure the same prompt yields the same output under controlled conditions.</p></li>
+</ul>
+</li>
+<li><p>Structure &amp; Formatting</p>
+<ul>
+<li><p><strong>Output structure enforcement</strong>: Validate that responses follow required formats (e.g., bullet points, tables, JSON).</p></li>
+<li><p><strong>Length control</strong>: Ensure response respect word limits.</p></li>
+</ul>
+</li>
+</ul>
+<section id="case-1-extract-infrmation-from-earning-report">
+<h3>Case 1: Extract infrmation from earning report<a class="headerlink" href="#case-1-extract-infrmation-from-earning-report" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Defines a “golden set” of expected phrases (like unit test assertions).</p></li>
+<li><p>Checks that the LLM includes all critical facts.</p></li>
+<li><p>Gives a clean pass/fail result with explanation.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="k">def</span> <span class="nf">llm_openai</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Call OpenAI ChatCompletion API and return output text.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Set your OpenAI API key as an environment variable before running</span>
+    <span class="n">api_key</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./openai.key&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">)</span>
+
+    <span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">llm_model</span><span class="p">,</span>
+        <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">prompt</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span>   
+    <span class="k">return</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">def</span> <span class="nf">llm_with_logging</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_func</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes an LLM prompt using a provided function, saves the prompt and logs the interaction.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        prompt (str): The prompt to send to the LLM.</span>
+<span class="sd">        llm_model (str): The name of the LLM model to use.</span>
+<span class="sd">        llm_func (callable): The function to execute the LLM call. Defaults to llm_execute.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The output from the LLM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log_dir</span> <span class="o">=</span> <span class="s2">&quot;logs&quot;</span>
+    <span class="c1"># prompts_dir = &quot;prompts&quot;</span>
+    
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># os.makedirs(prompts_dir, exist_ok=True)</span>
+    
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">date_str</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+    <span class="n">timestamp_str</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">)</span>
+    
+    <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;logfile_</span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="s2">.jsonl&quot;</span><span class="p">)</span>
+    <span class="c1"># prompt_file = os.path.join(prompts_dir, f&quot;prompt_{timestamp_str}.txt&quot;)</span>
+
+    <span class="c1"># with open(prompt_file, &quot;w&quot;) as f:</span>
+    <span class="c1">#     f.write(prompt)</span>
+    <span class="c1"># print(f&quot;Saved prompt to {prompt_file}&quot;)</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">llm_func</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">)</span>
+
+    <span class="n">log_entry</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">now</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">llm_model</span><span class="p">,</span>
+        <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">,</span>
+        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">output</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">log_entry</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Logged interaction to </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_summary_quality</span><span class="p">(</span><span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expected_phrases</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unit-style test: check if all expected phrases appear in the output.&quot;&quot;&quot;</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">expected_phrases</span> <span class="o">=</span> <span class="p">[</span><span class="n">phrase</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">phrase</span> <span class="ow">in</span> <span class="n">expected_phrases</span><span class="p">]</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">phrase</span> <span class="k">for</span> <span class="n">phrase</span> <span class="ow">in</span> <span class="n">expected_phrases</span> <span class="k">if</span> <span class="n">phrase</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">output</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Test failed. Missing key points:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; - </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Test passed. Output contains all expected key points.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Realistic business prompt for LLM ---</span>
+<span class="n">test_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Summarize the following Q1 2024 earnings report for internal strategy briefings. Focus on revenue, profit, growth drivers, and geographic performance:</span>
+
+<span class="s2">&#39;In its first quarter of fiscal 2024, Starbucks reported consolidated net revenues of $9.4 billion, representing an 8</span><span class="si">% i</span><span class="s2">ncrease over the prior year. Net income grew to $1.1 billion, or $0.78 per share, compared to $0.68 per share in Q1 2023. The North America segment saw a 9</span><span class="si">% r</span><span class="s2">evenue increase, fueled by higher average ticket and increased store traffic. International revenue rose 7%, with particularly strong performance in China where same-store sales jumped 11%. Starbucks opened 549 new stores globally in the quarter, bringing its total to over 38,000. CEO Laxman Narasimhan cited continued investment in digital platforms and mobile ordering as a key competitive advantage. Operating margin expanded 40 basis points year-over-year. The company reaffirmed its full-year guidance of high-single-digit revenue growth.&#39;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># --- Define expected content for unit test ---</span>
+<span class="n">expected_phrases</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;$9.4 billion&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;$1.1 billion&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;North America&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;China&quot;</span><span class="p">,</span>
+    <span class="c1"># &quot;549 new stores&quot;,</span>
+    <span class="c1"># &quot;digital platforms and mobile ordering&quot;,</span>
+    <span class="c1"># &quot;operating margin&quot;</span>
+<span class="p">]</span>
+
+<span class="c1"># --- Run the test ---</span>
+<span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-4.1-nano&quot;</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📤 LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔍 Running Unit Test...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">test_summary_quality</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected_phrases</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved prompt to prompts/prompt_20250618-144651.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+
+📤 LLM Output:
+ Q1 2024 Earnings Summary for Internal Strategy Briefing:
+
+**Revenue and Profit:**
+- Consolidated net revenues reached $9.4 billion, up 8% year-over-year.
+- Net income increased to $1.1 billion, with EPS of $0.78, compared to $0.68 in Q1 2023.
+- Operating margin expanded by 40 basis points, indicating improved profitability.
+
+**Growth Drivers:**
+- Strong performance driven by higher average tickets and increased store traffic, particularly in North America.
+- Continued investment in digital platforms and mobile ordering enhanced customer engagement and sales.
+- Opening of 549 new stores globally, expanding the total footprint to over 38,000 locations.
+
+**Geographic Performance:**
+- North America: Revenue grew 9%, supported by increased customer visits and higher spend per visit.
+- International: Revenue rose 7%, with China leading international growth—same-store sales up 11%, highlighting robust market performance.
+
+**Outlook:**
+- The company reaffirmed its full-year guidance, targeting high-single-digit revenue growth.
+
+This performance underscores the effectiveness of strategic investments in digital channels and store expansion, with strong growth momentum in key markets, especially China.
+
+🔍 Running Unit Test...
+
+=== Test passed. Output contains all expected key points.
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="case-2-generate-marketing-materials">
+<h3>Case 2: Generate marketing materials<a class="headerlink" href="#case-2-generate-marketing-materials" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Track changes in model output over time or when prompts/models change.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Write a compelling headline for an email marketing campaign promoting a new rewards credit card for young professionals. Focus on travel perks, no annual fee, and cash back.&quot;&quot;&quot;</span>
+
+<span class="n">expected_phrases</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;travel&quot;</span><span class="p">,</span> <span class="s2">&quot;no annual fee&quot;</span><span class="p">,</span> <span class="s2">&quot;cash back&quot;</span><span class="p">]</span>
+
+<span class="c1"># Run on two model versions</span>
+<span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-4.1-nano&quot;</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📤 LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+<span class="n">test_summary_quality</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected_phrases</span><span class="p">)</span>
+
+<span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-3.5-turbo&quot;</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📤 LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+<span class="n">test_summary_quality</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected_phrases</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved prompt to prompts/prompt_20250618-144653.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+
+📤 LLM Output:
+ Unlock Your Adventure: No Fee, Big Rewards — Travel Perks &amp; Cash Back for Young Professionals!
+=== Test failed. Missing key points:
+ - no annual fee
+Saved prompt to prompts/prompt_20250618-144653.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+
+📤 LLM Output:
+ &quot;Unlock Your Passport to Adventure with Our New Rewards Credit Card - No Annual Fee, Cash Back, and Travel Perks Await!&quot;
+=== Test passed. Output contains all expected key points.
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="case-3-check-classification-outcome">
+<h3>Case 3: Check classification outcome<a class="headerlink" href="#case-3-check-classification-outcome" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Adopt embedding to compare similarity</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="k">def</span> <span class="nf">get_embedding_openai</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get embedding vector for a category string using OpenAI embeddings API.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">api_key</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./openai.key&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">)</span>
+
+    <span class="c1"># Use a small model for speed/cost; adjust as needed</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="nb">input</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;text-embedding-3-small&quot;</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">embedding</span>
+
+<span class="k">def</span> <span class="nf">cosine_similarity</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute cosine similarity between two vectors.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vec1</span><span class="p">)</span>
+    <span class="n">v2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vec2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v2</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1">#  Evaluation Function</span>
+<span class="k">def</span> <span class="nf">evaluate_product_classification</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">prompt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Send each product name to LLM and compare output category to golden label.</span>
+<span class="sd">    Adds columns for LLM response, predicted category, match status, and error type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;product_name&quot;</span><span class="p">]</span>
+        <span class="n">gold_category</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ground_truth_category&quot;</span><span class="p">]</span>
+
+        <span class="n">user_prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">product</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">llm_output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">user_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">)</span>
+
+        <span class="c1"># Try to extract category from LLM output</span>
+        <span class="n">category_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Category:\s*(.*)&quot;</span><span class="p">,</span> <span class="n">llm_output</span><span class="p">)</span>
+        <span class="n">predicted_category</span> <span class="o">=</span> <span class="n">category_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">category_match</span> <span class="k">else</span> <span class="s2">&quot;N/A&quot;</span>
+
+        <span class="n">match</span> <span class="o">=</span> <span class="n">predicted_category</span> <span class="o">==</span> <span class="n">gold_category</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="c1"># Get embeddings and similarity</span>
+        <span class="n">pred_emb</span> <span class="o">=</span> <span class="n">get_embedding_openai</span><span class="p">(</span><span class="n">predicted_category</span><span class="p">)</span>
+        <span class="n">gold_emb</span> <span class="o">=</span> <span class="n">get_embedding_openai</span><span class="p">(</span><span class="n">gold_category</span><span class="p">)</span>
+        <span class="n">similarity</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">pred_emb</span><span class="p">,</span> <span class="n">gold_emb</span><span class="p">)</span>
+
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;product_name&quot;</span><span class="p">:</span> <span class="n">product</span><span class="p">,</span>
+            <span class="s2">&quot;gold_category&quot;</span><span class="p">:</span> <span class="n">gold_category</span><span class="p">,</span>
+            <span class="s2">&quot;llm_response&quot;</span><span class="p">:</span> <span class="n">llm_output</span><span class="p">,</span>
+            <span class="s2">&quot;predicted_category&quot;</span><span class="p">:</span> <span class="n">predicted_category</span><span class="p">,</span>
+            <span class="s2">&quot;match&quot;</span><span class="p">:</span> <span class="n">match</span><span class="p">,</span>
+            <span class="s2">&quot;error_type&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">match</span> <span class="k">else</span> <span class="s2">&quot;misclassification&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cosine_similarity&quot;</span><span class="p">:</span> <span class="n">similarity</span>
+        <span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_products</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;product_name&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;Dyson V11 Torque Drive&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Keurig K-Supreme Plus SMART&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;iPhone 15 Pro Max&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;YETI Rambler 20 oz Tumbler&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Sony WH-1000XM5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Blue Diamond Almonds - Lightly Salted&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Peloton Bike+&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nest Thermostat (3rd Gen)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;L&#39;Oréal Paris Revitalift Serum&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Kindle Paperwhite Signature Edition&quot;</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;ground_truth_category&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;vacuum cleaner&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;coffee maker&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;smartphone&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;drinkware&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;headphones&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;snack&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;exercise equipment&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;smart home device&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;skincare&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;e-reader&quot;</span>
+    <span class="p">]</span>
+<span class="p">})</span>
+
+<span class="n">test_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Classify the following product into a specific consumer product category. </span>
+<span class="s2">Reply in the format: </span>
+<span class="s2">Category: &lt;your category&gt;</span>
+<span class="s2">Reason: &lt;your reasoning based on the product name&gt;</span>
+<span class="s2">Product: &quot;&quot;&quot;</span>
+
+<span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-4.1-nano&quot;</span>
+<span class="n">df_results</span> <span class="o">=</span> <span class="n">evaluate_product_classification</span><span class="p">(</span><span class="n">df_products</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">test_prompt</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved prompt to prompts/prompt_20250618-144654.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+Saved prompt to prompts/prompt_20250618-144655.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+Saved prompt to prompts/prompt_20250618-144657.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+Saved prompt to prompts/prompt_20250618-144658.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+Saved prompt to prompts/prompt_20250618-144659.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+Saved prompt to prompts/prompt_20250618-144700.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+Saved prompt to prompts/prompt_20250618-144702.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+Saved prompt to prompts/prompt_20250618-144703.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+Saved prompt to prompts/prompt_20250618-144706.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+Saved prompt to prompts/prompt_20250618-144707.txt
+Logged interaction to logs/logfile_2025-06-18.jsonl
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_results</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;product_classification_results.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_results</span><span class="p">[[</span><span class="s2">&quot;product_name&quot;</span><span class="p">,</span> <span class="s2">&quot;predicted_category&quot;</span><span class="p">,</span> <span class="s2">&quot;gold_category&quot;</span><span class="p">,</span> <span class="s2">&quot;match&quot;</span><span class="p">,</span><span class="s2">&quot;cosine_similarity&quot;</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                            product_name  \
+0                 Dyson V11 Torque Drive   
+1            Keurig K-Supreme Plus SMART   
+2                      iPhone 15 Pro Max   
+3             YETI Rambler 20 oz Tumbler   
+4                        Sony WH-1000XM5   
+5  Blue Diamond Almonds - Lightly Salted   
+6                          Peloton Bike+   
+7              Nest Thermostat (3rd Gen)   
+8         L&#39;Oréal Paris Revitalift Serum   
+9    Kindle Paperwhite Signature Edition   
+
+                     predicted_category       gold_category  match  \
+0                       vacuum cleaners      vacuum cleaner  False   
+1              small kitchen appliances        coffee maker  False   
+2                            smartphone          smartphone   True   
+3                  drinkware / tumblers           drinkware  False   
+4          headphones / audio equipment          headphones  False   
+5                      food &amp; beverages               snack  False   
+6                     fitness equipment  exercise equipment  False   
+7  home automation / smart home devices   smart home device  False   
+8              skincare / facial serums            skincare  False   
+9     e-reader / electronic book reader            e-reader  False   
+
+   cosine_similarity  
+0           0.894336  
+1           0.485816  
+2           0.999999  
+3           0.822056  
+4           0.794836  
+5           0.413488  
+6           0.909726  
+7           0.795683  
+8           0.736923  
+9           0.882946  
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="llm_versioning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Workshop Module: Logging &amp; Version Control for Computational Research</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#llm-testing">LLM Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-extract-infrmation-from-earning-report">Case 1: Extract infrmation from earning report</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-generate-marketing-materials">Case 2: Generate marketing materials</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-3-check-classification-outcome">Case 3: Check classification outcome</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Kellogg Research Support
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
