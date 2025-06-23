@@ -1,0 +1,17 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: welcome
+parts:
+- caption: LLM Applications
+  numbered: false
+  chapters:
+  - file: llm_extract
+  - file: llm_simulate
+  - file: llm_versioning
+  - file: llm_testing
+
+
+  
+
