@@ -387,24 +387,18 @@ document.write(`
 <section id="llm-testing-list">
 <h2>LLM Testing List<a class="headerlink" href="#llm-testing-list" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Correctness &amp; Accuracy</p>
-<ul>
-<li><p><strong>Unit tests</strong>: Check exact match against expected answers.</p></li>
-<li><p><strong>Classification metrics</strong>: Compare predicted labels to ground truth (e.g. accuracy, F1).</p></li>
-<li><p><strong>Factuality checks</strong>: Validate claims against external sources; flag hallucinations.</p></li>
-</ul>
-</li>
-<li><p>Consistency &amp; Stability</p>
-<ul>
-<li><p><strong>Regression testing</strong>: Detect output changes over time or between model versions.</p></li>
-<li><p><strong>Prompt sensitivity</strong>: Assess how small wording or formatting changes affect results.</p></li>
-<li><p><strong>Reproducibility</strong>: Ensure the same prompt yields the same output under controlled conditions.</p></li>
-</ul>
-</li>
 <li><p>Structure &amp; Formatting</p>
 <ul>
-<li><p><strong>Output structure enforcement</strong>: Validate that responses follow required formats (e.g., bullet points, tables, JSON).</p></li>
-<li><p><strong>Length control</strong>: Ensure response respect word limits.</p></li>
+<li><p>Length control: Ensure response respect token limits.</p></li>
+<li><p>Output structure enforcement: Validate that responses follow required formats (e.g., bullet points, tables, JSON).</p></li>
+</ul>
+</li>
+<li><p>Correctness: Check against expected answers or external source (exact match or similarity)</p></li>
+<li><p>Consistency &amp; Stability</p>
+<ul>
+<li><p>Reproducibility: Set temperature and seed value.</p></li>
+<li><p>Prompt sensitivity: Assess how changes in wording affect results.</p></li>
+<li><p>Regression testing: Detect output changes over model versions.</p></li>
 </ul>
 </li>
 </ul>
