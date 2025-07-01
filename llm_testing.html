@@ -416,7 +416,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
-<span class="k">def</span> <span class="nf">llm_openai</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">llm_openai</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Call OpenAI ChatCompletion API and return output text.&quot;&quot;&quot;</span>
 
     <span class="c1"># Set your OpenAI API key as an environment variable before running</span>
@@ -431,7 +431,9 @@ document.write(`
                 <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">prompt</span>
             <span class="p">}</span>
         <span class="p">],</span>
-        <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+        <span class="n">max_completion_tokens</span><span class="o">=</span><span class="n">max_tokens</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
     <span class="p">)</span>   
     <span class="k">return</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
 </pre></div>
@@ -444,7 +446,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="k">def</span> <span class="nf">llm_with_logging</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_func</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">llm_with_logging</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_func</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Executes an LLM prompt using a provided function, saves the prompt and logs the interaction.</span>
 <span class="sd">    Args:</span>
@@ -454,28 +456,23 @@ document.write(`
 <span class="sd">    Returns:</span>
 <span class="sd">        str: The output from the LLM.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">log_dir</span> <span class="o">=</span> <span class="s2">&quot;logs&quot;</span>
-    <span class="c1"># prompts_dir = &quot;prompts&quot;</span>
-    
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="c1"># os.makedirs(prompts_dir, exist_ok=True)</span>
     
     <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
     <span class="n">date_str</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
     <span class="n">timestamp_str</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">)</span>
     
     <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;logfile_</span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="s2">.jsonl&quot;</span><span class="p">)</span>
-    <span class="c1"># prompt_file = os.path.join(prompts_dir, f&quot;prompt_{timestamp_str}.txt&quot;)</span>
 
-    <span class="c1"># with open(prompt_file, &quot;w&quot;) as f:</span>
-    <span class="c1">#     f.write(prompt)</span>
-    <span class="c1"># print(f&quot;Saved prompt to {prompt_file}&quot;)</span>
-
-    <span class="n">output</span> <span class="o">=</span> <span class="n">llm_func</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">llm_func</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
 
     <span class="n">log_entry</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">now</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
         <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">llm_model</span><span class="p">,</span>
+        <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">temperature</span><span class="p">,</span>
+        <span class="s2">&quot;max_tokens&quot;</span><span class="p">:</span> <span class="n">max_tokens</span><span class="p">,</span>
         <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">,</span>
         <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">output</span><span class="p">,</span>
     <span class="p">}</span>
@@ -529,40 +526,41 @@ document.write(`
 
 <span class="c1"># --- Run the test ---</span>
 <span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-4.1-nano&quot;</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📤 LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔍 Running Unit Test...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="n">max_tokens</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">,</span><span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Running Unit Test...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">test_summary_quality</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected_phrases</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved prompt to prompts/prompt_20250618-144651.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Logged interaction to logs/logfile_2025-07-01.jsonl
 
-📤 LLM Output:
+=== LLM Output:
  Q1 2024 Earnings Summary for Internal Strategy Briefing:
 
-**Revenue and Profit:**
-- Consolidated net revenues reached $9.4 billion, up 8% year-over-year.
-- Net income increased to $1.1 billion, with EPS of $0.78, compared to $0.68 in Q1 2023.
-- Operating margin expanded by 40 basis points, indicating improved profitability.
+**Revenue:**  
+Starbucks generated $9.4 billion in net revenues, up 8% year-over-year, reflecting solid growth across key markets.
 
-**Growth Drivers:**
-- Strong performance driven by higher average tickets and increased store traffic, particularly in North America.
-- Continued investment in digital platforms and mobile ordering enhanced customer engagement and sales.
-- Opening of 549 new stores globally, expanding the total footprint to over 38,000 locations.
+**Profit:**  
+Net income increased to $1.1 billion ($0.78 per share) from previous earnings of $0.68 per share in Q1 2023, indicating improved profitability.
 
-**Geographic Performance:**
-- North America: Revenue grew 9%, supported by increased customer visits and higher spend per visit.
-- International: Revenue rose 7%, with China leading international growth—same-store sales up 11%, highlighting robust market performance.
+**Growth Drivers:**  
+- **Domestic Market:** North America experienced a 9% revenue increase driven by higher average tickets and increased store traffic.  
+- **International Markets:** International revenue grew 7%, with China leading the way, where same-store sales surged 11%.  
+- **Expansion:** The company opened 549 new stores globally, reaching over 38,000 locations.  
+- **Digital Investment:** Continued focus on digital platforms and mobile ordering has strengthened competitive positioning.
 
-**Outlook:**
-- The company reaffirmed its full-year guidance, targeting high-single-digit revenue growth.
+**Geographic Performance:**  
+- **North America:** Strong growth with a 9% revenue increase.  
+- **International:** 7% growth overall, with notable strength in China (11% same-store sales growth).
 
-This performance underscores the effectiveness of strategic investments in digital channels and store expansion, with strong growth momentum in key markets, especially China.
+**Margins &amp; Outlook:**  
+Operating margin expanded by 40 basis points year-over-year. Starbucks reaffirmed its full-year guidance of high-single-digit revenue growth, emphasizing ongoing strategic investments.
 
-🔍 Running Unit Test...
+=== Running Unit Test...
 
 === Test passed. Output contains all expected key points.
 </pre></div>
@@ -586,34 +584,36 @@ This performance underscores the effectiveness of strategic investments in digit
 
 <span class="c1"># Run on two model versions</span>
 <span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-4.1-nano&quot;</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📤 LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+<span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="n">max_tokens</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
 <span class="n">test_summary_quality</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected_phrases</span><span class="p">)</span>
 
 <span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-3.5-turbo&quot;</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📤 LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
 <span class="n">test_summary_quality</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected_phrases</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved prompt to prompts/prompt_20250618-144653.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Logged interaction to logs/logfile_2025-07-01.jsonl
 
-📤 LLM Output:
- Unlock Your Adventure: No Fee, Big Rewards — Travel Perks &amp; Cash Back for Young Professionals!
-=== Test failed. Missing key points:
- - no annual fee
-Saved prompt to prompts/prompt_20250618-144653.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
-
-📤 LLM Output:
- &quot;Unlock Your Passport to Adventure with Our New Rewards Credit Card - No Annual Fee, Cash Back, and Travel Perks Await!&quot;
+=== LLM Output:
+ Unlock Your Adventure: Earn Travel Perks, Cash Back, and No Annual Fee with Our New Rewards Credit Card!
 === Test passed. Output contains all expected key points.
+Logged interaction to logs/logfile_2025-07-01.jsonl
+
+=== LLM Output:
+ &quot;Unlock Your Next Adventure: Introducing the Ultimate Rewards Credit Card for Young Professionals&quot;
+=== Test failed. Missing key points:
+ - travel
+ - no annual fee
+ - cash back
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>False
 </pre></div>
 </div>
 </div>
@@ -660,7 +660,7 @@ Logged interaction to logs/logfile_2025-06-18.jsonl
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1">#  Evaluation Function</span>
-<span class="k">def</span> <span class="nf">evaluate_product_classification</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">prompt</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">evaluate_product_classification</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Send each product name to LLM and compare output category to golden label.</span>
 <span class="sd">    Adds columns for LLM response, predicted category, match status, and error type.</span>
@@ -673,7 +673,7 @@ Logged interaction to logs/logfile_2025-06-18.jsonl
 
         <span class="n">user_prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">product</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
-        <span class="n">llm_output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">user_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">)</span>
+        <span class="n">llm_output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">user_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
 
         <span class="c1"># Try to extract category from LLM output</span>
         <span class="n">category_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Category:\s*(.*)&quot;</span><span class="p">,</span> <span class="n">llm_output</span><span class="p">)</span>
@@ -737,31 +737,23 @@ Logged interaction to logs/logfile_2025-06-18.jsonl
 <span class="s2">Product: &quot;&quot;&quot;</span>
 
 <span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-4.1-nano&quot;</span>
-<span class="n">df_results</span> <span class="o">=</span> <span class="n">evaluate_product_classification</span><span class="p">(</span><span class="n">df_products</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">test_prompt</span><span class="p">)</span>
+<span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="n">max_tokens</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">df_results</span> <span class="o">=</span> <span class="n">evaluate_product_classification</span><span class="p">(</span><span class="n">df_products</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">test_prompt</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved prompt to prompts/prompt_20250618-144654.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
-Saved prompt to prompts/prompt_20250618-144655.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
-Saved prompt to prompts/prompt_20250618-144657.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
-Saved prompt to prompts/prompt_20250618-144658.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
-Saved prompt to prompts/prompt_20250618-144659.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
-Saved prompt to prompts/prompt_20250618-144700.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
-Saved prompt to prompts/prompt_20250618-144702.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
-Saved prompt to prompts/prompt_20250618-144703.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
-Saved prompt to prompts/prompt_20250618-144706.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
-Saved prompt to prompts/prompt_20250618-144707.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Logged interaction to logs/logfile_2025-07-01.jsonl
+Logged interaction to logs/logfile_2025-07-01.jsonl
+Logged interaction to logs/logfile_2025-07-01.jsonl
+Logged interaction to logs/logfile_2025-07-01.jsonl
+Logged interaction to logs/logfile_2025-07-01.jsonl
+Logged interaction to logs/logfile_2025-07-01.jsonl
+Logged interaction to logs/logfile_2025-07-01.jsonl
+Logged interaction to logs/logfile_2025-07-01.jsonl
+Logged interaction to logs/logfile_2025-07-01.jsonl
+Logged interaction to logs/logfile_2025-07-01.jsonl
 </pre></div>
 </div>
 </div>
@@ -788,27 +780,27 @@ Logged interaction to logs/logfile_2025-06-18.jsonl
 
                      predicted_category       gold_category  match  \
 0                       vacuum cleaners      vacuum cleaner  False   
-1              small kitchen appliances        coffee maker  False   
+1               small kitchen appliance        coffee maker  False   
 2                            smartphone          smartphone   True   
 3                  drinkware / tumblers           drinkware  False   
-4          headphones / audio equipment          headphones  False   
-5                      food &amp; beverages               snack  False   
+4      headphones / wireless headphones          headphones  False   
+5                            snack food               snack  False   
 6                     fitness equipment  exercise equipment  False   
 7  home automation / smart home devices   smart home device  False   
 8              skincare / facial serums            skincare  False   
 9     e-reader / electronic book reader            e-reader  False   
 
    cosine_similarity  
-0           0.894336  
-1           0.485816  
+0           0.894264  
+1           0.519339  
 2           0.999999  
-3           0.822056  
-4           0.794836  
-5           0.413488  
+3           0.821989  
+4           0.788420  
+5           0.900429  
 6           0.909726  
-7           0.795683  
-8           0.736923  
-9           0.882946  
+7           0.795663  
+8           0.737094  
+9           0.882975  
 </pre></div>
 </div>
 </div>

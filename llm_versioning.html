@@ -419,7 +419,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
-<span class="k">def</span> <span class="nf">llm_openai</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">llm_openai</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Call OpenAI ChatCompletion API and return output text.&quot;&quot;&quot;</span>
 
     <span class="c1"># Set your OpenAI API key as an environment variable before running</span>
@@ -434,12 +434,14 @@ document.write(`
                 <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">prompt</span>
             <span class="p">}</span>
         <span class="p">],</span>
-        <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+        <span class="n">max_completion_tokens</span><span class="o">=</span><span class="n">max_tokens</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
     <span class="p">)</span>   
     <span class="k">return</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
 
 
-<span class="k">def</span> <span class="nf">llm_faketest</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">llm_faketest</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Executes a prompt against a specified LLM model.</span>
 <span class="sd">    This is a placeholder for a real API call.</span>
@@ -456,7 +458,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="k">def</span> <span class="nf">llm_with_logging</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_func</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">llm_with_logging</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_func</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Executes an LLM prompt using a provided function, saves the prompt and logs the interaction.</span>
 <span class="sd">    Args:</span>
@@ -466,28 +468,23 @@ document.write(`
 <span class="sd">    Returns:</span>
 <span class="sd">        str: The output from the LLM.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">log_dir</span> <span class="o">=</span> <span class="s2">&quot;logs&quot;</span>
-    <span class="n">prompts_dir</span> <span class="o">=</span> <span class="s2">&quot;prompts&quot;</span>
-    
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">prompts_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     
     <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
     <span class="n">date_str</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
     <span class="n">timestamp_str</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">)</span>
     
     <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;logfile_</span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="s2">.jsonl&quot;</span><span class="p">)</span>
-    <span class="n">prompt_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prompts_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;prompt_</span><span class="si">{</span><span class="n">timestamp_str</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prompt_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved prompt to </span><span class="si">{</span><span class="n">prompt_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="n">output</span> <span class="o">=</span> <span class="n">llm_func</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">llm_func</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
 
     <span class="n">log_entry</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">now</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
         <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">llm_model</span><span class="p">,</span>
+        <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">temperature</span><span class="p">,</span>
+        <span class="s2">&quot;max_tokens&quot;</span><span class="p">:</span> <span class="n">max_tokens</span><span class="p">,</span>
         <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">,</span>
         <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">output</span><span class="p">,</span>
     <span class="p">}</span>
@@ -505,17 +502,17 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_prompt</span> <span class="o">=</span> <span class="s2">&quot;Tell a quick fun fact about business.&quot;</span>
 <span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-4.1-nano&quot;</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="s2">&quot;test-model&quot;</span><span class="p">,</span> <span class="n">llm_faketest</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">)</span>
+<span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">max_tokens</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="s2">&quot;test-model&quot;</span><span class="p">,</span> <span class="n">llm_faketest</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved prompt to prompts/prompt_20250618-105847.txt
-Executing prompt with model: test-model
-Logged interaction to logs/logfile_2025-06-18.jsonl
-Saved prompt to prompts/prompt_20250618-105847.txt
-Logged interaction to logs/logfile_2025-06-18.jsonl
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Executing prompt with model: test-model
+Logged interaction to logs/logfile_2025-07-01.jsonl
+Logged interaction to logs/logfile_2025-07-01.jsonl
 </pre></div>
 </div>
 </div>
