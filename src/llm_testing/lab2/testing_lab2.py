@@ -89,9 +89,9 @@ if __name__ == "__main__":
     data_path = Path("./data")
     files_list = list(data_path.glob("*.txt"))
 
-    prompt_file = "prompt.txt"
-    with open(prompt_file, "r") as f:
-        prompt_main = f.read().strip()
+    # prompt_file = "prompt.txt"
+    # with open(prompt_file, "r") as f:
+    #     prompt_main = f.read().strip()
     prompt_main = ""
 
     prompt_list = []
