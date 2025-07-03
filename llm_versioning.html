@@ -369,14 +369,9 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging-your-work">Logging Your Work</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-logging-matters">Why Logging Matters</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-task-log-a-simple-llm-prompt">Example Task: Log a Simple LLM Prompt</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lab-1-generate-marketing-materials">Lab 1: Generate marketing materials</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-control-with-git">Version Control with Git</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-use-git">Why Use Git</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-git-demo">Quick Git Demo</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">Key Takeaways</a></li>
 </ul>
             </nav>
         </div>
@@ -403,172 +398,46 @@ document.write(`
 <section id="example-task-log-a-simple-llm-prompt">
 <h3>Example Task: Log a Simple LLM Prompt<a class="headerlink" href="#example-task-log-a-simple-llm-prompt" title="Permalink to this heading">#</a></h3>
 <ul>
-<li><p>Save log files in a <code class="docutils literal notranslate"><span class="pre">./logs</span></code> folder by date.</p></li>
-<li><p>This appends a log line to <code class="docutils literal notranslate"><span class="pre">./logs/logfile_YYYY-MM-DD.jsonl</span></code>.</p></li>
+<li><p>Save log files <code class="docutils literal notranslate"><span class="pre">logfile_YYYY-MM-DD.jsonl</span></code> to <code class="docutils literal notranslate"><span class="pre">logs</span></code> folder.</p></li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">.jsonl</span></code> (JSON Lines) format for logging experiments, easy to parse later</p>
+<ul class="simple">
+<li><p>Write</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">log_entry</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">now</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">llm_model</span><span class="p">,</span>
+    <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">temperature</span><span class="p">,</span>
+    <span class="s2">&quot;max_tokens&quot;</span><span class="p">:</span> <span class="n">max_tokens</span><span class="p">,</span>
+    <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">,</span>
+    <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">output</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">log_entry</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Read</p></li>
+</ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;log.jsonl&quot;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;logfile_2025-07-01.jsonl&quot;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
 </ul>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="n">OpenAI</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-
-<span class="k">def</span> <span class="nf">llm_openai</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Call OpenAI ChatCompletion API and return output text.&quot;&quot;&quot;</span>
-
-    <span class="c1"># Set your OpenAI API key as an environment variable before running</span>
-    <span class="n">api_key</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./openai.key&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">)</span>
-
-    <span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-        <span class="n">model</span><span class="o">=</span><span class="n">llm_model</span><span class="p">,</span>
-        <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">prompt</span>
-            <span class="p">}</span>
-        <span class="p">],</span>
-        <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
-        <span class="n">max_completion_tokens</span><span class="o">=</span><span class="n">max_tokens</span><span class="p">,</span>
-        <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
-    <span class="p">)</span>   
-    <span class="k">return</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
-
-
-<span class="k">def</span> <span class="nf">llm_faketest</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Executes a prompt against a specified LLM model.</span>
-<span class="sd">    This is a placeholder for a real API call.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing prompt with model: </span><span class="si">{</span><span class="n">llm_model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Fake output for: </span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">&quot;</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-
-<span class="k">def</span> <span class="nf">llm_with_logging</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_func</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Executes an LLM prompt using a provided function, saves the prompt and logs the interaction.</span>
-<span class="sd">    Args:</span>
-<span class="sd">        prompt (str): The prompt to send to the LLM.</span>
-<span class="sd">        llm_model (str): The name of the LLM model to use.</span>
-<span class="sd">        llm_func (callable): The function to execute the LLM call. Defaults to llm_execute.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        str: The output from the LLM.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">log_dir</span> <span class="o">=</span> <span class="s2">&quot;logs&quot;</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    
-    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-    <span class="n">date_str</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
-    <span class="n">timestamp_str</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">)</span>
-    
-    <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;logfile_</span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="s2">.jsonl&quot;</span><span class="p">)</span>
-
-    <span class="n">output</span> <span class="o">=</span> <span class="n">llm_func</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
-
-    <span class="n">log_entry</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">now</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">llm_model</span><span class="p">,</span>
-        <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">temperature</span><span class="p">,</span>
-        <span class="s2">&quot;max_tokens&quot;</span><span class="p">:</span> <span class="n">max_tokens</span><span class="p">,</span>
-        <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">,</span>
-        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">output</span><span class="p">,</span>
-    <span class="p">}</span>
-
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">log_entry</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Logged interaction to </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">output</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_prompt</span> <span class="o">=</span> <span class="s2">&quot;Tell a quick fun fact about business.&quot;</span>
-<span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-4.1-nano&quot;</span>
-<span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">max_tokens</span> <span class="o">=</span> <span class="mi">500</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="s2">&quot;test-model&quot;</span><span class="p">,</span> <span class="n">llm_faketest</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Executing prompt with model: test-model
-Logged interaction to logs/logfile_2025-07-01.jsonl
-Logged interaction to logs/logfile_2025-07-01.jsonl
-</pre></div>
-</div>
-</div>
-</div>
 </section>
-</section>
-<section id="version-control-with-git">
-<h2>Version Control with Git<a class="headerlink" href="#version-control-with-git" title="Permalink to this heading">#</a></h2>
-<section id="why-use-git">
-<h3>Why Use Git<a class="headerlink" href="#why-use-git" title="Permalink to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Track code and prompt changes over time</p></li>
-<li><p>Collaborate with co-authors or advisors</p></li>
-<li><p>Restore earlier versions</p></li>
-</ul>
-</section>
-<section id="quick-git-demo">
-<h3>Quick Git Demo<a class="headerlink" href="#quick-git-demo" title="Permalink to this heading">#</a></h3>
+<section id="lab-1-generate-marketing-materials">
+<h3>Lab 1: Generate marketing materials<a class="headerlink" href="#lab-1-generate-marketing-materials" title="Permalink to this heading">#</a></h3>
 <ul>
-<li><p><strong>Step 1</strong>: Initialize a Git repo</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>init<span class="w"> </span>llm-project
-<span class="nb">cd</span><span class="w"> </span>llm-project
-</pre></div>
-</div>
-</li>
-<li><p><strong>Step 2</strong>: Add your script</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>../log_llm_prompt.py<span class="w"> </span>.
-git<span class="w"> </span>add<span class="w"> </span>log_llm_prompt.py
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Initial LLM logging script&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Step 3</strong>: Modify your prompt and commit again
-Edit the <code class="docutils literal notranslate"><span class="pre">prompt</span></code> line in <code class="docutils literal notranslate"><span class="pre">log_llm_prompt.py</span></code>, then:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>diff<span class="w">                </span><span class="c1"># See what changed</span>
-git<span class="w"> </span>add<span class="w"> </span>log_llm_prompt.py
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Updated prompt to focus on financial trends&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Step 4</strong>: View history</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>log<span class="w"> </span>--oneline
+<li><p>Track changes in model output over time or when prompts/models change.</p></li>
+<li><p>Modify to read prompt from file and add file to git</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>prompt.txt
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;add prompt text file&quot;</span>
 </pre></div>
 </div>
 </li>
 </ul>
 </section>
-</section>
-<section id="key-takeaways">
-<h2>Key Takeaways<a class="headerlink" href="#key-takeaways" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p>Log every prompt and output with timestamps and model version</p></li>
-<li><p>Use Git to track changes in your code and prompts</p></li>
-<li><p>These practices make your research more reproducible, especially when using LLMs or modeling pipelines</p></li>
-<li><p>Include model version/hash in logs (for real models like OpenAI or Claude)</p></li>
-</ul>
 </section>
 </section>
 
@@ -638,14 +507,9 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging-your-work">Logging Your Work</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-logging-matters">Why Logging Matters</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-task-log-a-simple-llm-prompt">Example Task: Log a Simple LLM Prompt</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lab-1-generate-marketing-materials">Lab 1: Generate marketing materials</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-control-with-git">Version Control with Git</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-use-git">Why Use Git</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-git-demo">Quick Git Demo</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">Key Takeaways</a></li>
 </ul>
   </nav></div>
 

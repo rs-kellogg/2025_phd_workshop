@@ -365,12 +365,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#llm-testing-list">LLM Testing List</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-extract-infrmation-from-earning-report">Case 1: Extract infrmation from earning report</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-generate-marketing-materials">Case 2: Generate marketing materials</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-3-check-classification-outcome">Case 3: Check classification outcome</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#llm-testing-list">LLM Testing List</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-correctness">Check Correctness</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lab-2-extract-severance-package-information-from-text">Lab 2: Extract severance package information from text</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lab-3-predict-product-category">Lab 3: Predict product category</a></li>
 </ul>
             </nav>
         </div>
@@ -386,6 +384,7 @@ document.write(`
 <h1>LLM Testing<a class="headerlink" href="#llm-testing" title="Permalink to this heading">#</a></h1>
 <section id="llm-testing-list">
 <h2>LLM Testing List<a class="headerlink" href="#llm-testing-list" title="Permalink to this heading">#</a></h2>
+<p><img alt="llm_scheme" src="_images/llm_scheme.png" /></p>
 <ul class="simple">
 <li><p>Structure &amp; Formatting</p>
 <ul>
@@ -393,7 +392,6 @@ document.write(`
 <li><p>Output structure enforcement: Validate that responses follow required formats (e.g., bullet points, tables, JSON).</p></li>
 </ul>
 </li>
-<li><p>Correctness: Check against expected answers or external source (exact match or similarity)</p></li>
 <li><p>Consistency &amp; Stability</p>
 <ul>
 <li><p>Reproducibility: Set temperature and seed value.</p></li>
@@ -401,228 +399,39 @@ document.write(`
 <li><p>Regression testing: Detect output changes over model versions.</p></li>
 </ul>
 </li>
+<li><p>Correctness: Check against expected answers or external source (exact match or similarity)</p></li>
 </ul>
-<section id="case-1-extract-infrmation-from-earning-report">
-<h3>Case 1: Extract infrmation from earning report<a class="headerlink" href="#case-1-extract-infrmation-from-earning-report" title="Permalink to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Defines a “golden set” of expected phrases (like unit test assertions).</p></li>
-<li><p>Checks that the LLM includes all critical facts.</p></li>
-<li><p>Gives a clean pass/fail result with explanation.</p></li>
-</ul>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="n">OpenAI</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-
-<span class="k">def</span> <span class="nf">llm_openai</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Call OpenAI ChatCompletion API and return output text.&quot;&quot;&quot;</span>
-
-    <span class="c1"># Set your OpenAI API key as an environment variable before running</span>
-    <span class="n">api_key</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./openai.key&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">)</span>
-
-    <span class="n">completion</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-        <span class="n">model</span><span class="o">=</span><span class="n">llm_model</span><span class="p">,</span>
-        <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">prompt</span>
-            <span class="p">}</span>
-        <span class="p">],</span>
-        <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
-        <span class="n">max_completion_tokens</span><span class="o">=</span><span class="n">max_tokens</span><span class="p">,</span>
-        <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
-    <span class="p">)</span>   
-    <span class="k">return</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-
-<span class="k">def</span> <span class="nf">llm_with_logging</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_func</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Executes an LLM prompt using a provided function, saves the prompt and logs the interaction.</span>
-<span class="sd">    Args:</span>
-<span class="sd">        prompt (str): The prompt to send to the LLM.</span>
-<span class="sd">        llm_model (str): The name of the LLM model to use.</span>
-<span class="sd">        llm_func (callable): The function to execute the LLM call. Defaults to llm_execute.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        str: The output from the LLM.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">log_dir</span> <span class="o">=</span> <span class="s2">&quot;logs&quot;</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    
-    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-    <span class="n">date_str</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
-    <span class="n">timestamp_str</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">)</span>
-    
-    <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">log_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;logfile_</span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="s2">.jsonl&quot;</span><span class="p">)</span>
-
-    <span class="n">output</span> <span class="o">=</span> <span class="n">llm_func</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
-
-    <span class="n">log_entry</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">now</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">llm_model</span><span class="p">,</span>
-        <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">temperature</span><span class="p">,</span>
-        <span class="s2">&quot;max_tokens&quot;</span><span class="p">:</span> <span class="n">max_tokens</span><span class="p">,</span>
-        <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">,</span>
-        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">output</span><span class="p">,</span>
-    <span class="p">}</span>
-
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">log_entry</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Logged interaction to </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">output</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_summary_quality</span><span class="p">(</span><span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expected_phrases</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unit-style test: check if all expected phrases appear in the output.&quot;&quot;&quot;</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="n">expected_phrases</span> <span class="o">=</span> <span class="p">[</span><span class="n">phrase</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">phrase</span> <span class="ow">in</span> <span class="n">expected_phrases</span><span class="p">]</span>
-    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">phrase</span> <span class="k">for</span> <span class="n">phrase</span> <span class="ow">in</span> <span class="n">expected_phrases</span> <span class="k">if</span> <span class="n">phrase</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">output</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Test failed. Missing key points:&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; - </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Test passed. Output contains all expected key points.&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="kc">True</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Realistic business prompt for LLM ---</span>
-<span class="n">test_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">Summarize the following Q1 2024 earnings report for internal strategy briefings. Focus on revenue, profit, growth drivers, and geographic performance:</span>
-
-<span class="s2">&#39;In its first quarter of fiscal 2024, Starbucks reported consolidated net revenues of $9.4 billion, representing an 8</span><span class="si">% i</span><span class="s2">ncrease over the prior year. Net income grew to $1.1 billion, or $0.78 per share, compared to $0.68 per share in Q1 2023. The North America segment saw a 9</span><span class="si">% r</span><span class="s2">evenue increase, fueled by higher average ticket and increased store traffic. International revenue rose 7%, with particularly strong performance in China where same-store sales jumped 11%. Starbucks opened 549 new stores globally in the quarter, bringing its total to over 38,000. CEO Laxman Narasimhan cited continued investment in digital platforms and mobile ordering as a key competitive advantage. Operating margin expanded 40 basis points year-over-year. The company reaffirmed its full-year guidance of high-single-digit revenue growth.&#39;</span>
-<span class="s2">&quot;&quot;&quot;</span>
-
-<span class="c1"># --- Define expected content for unit test ---</span>
-<span class="n">expected_phrases</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;$9.4 billion&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;$1.1 billion&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;North America&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;China&quot;</span><span class="p">,</span>
-    <span class="c1"># &quot;549 new stores&quot;,</span>
-    <span class="c1"># &quot;digital platforms and mobile ordering&quot;,</span>
-    <span class="c1"># &quot;operating margin&quot;</span>
-<span class="p">]</span>
-
-<span class="c1"># --- Run the test ---</span>
-<span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-4.1-nano&quot;</span>
-<span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.7</span>
-<span class="n">max_tokens</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">,</span><span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Running Unit Test...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">test_summary_quality</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected_phrases</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Logged interaction to logs/logfile_2025-07-01.jsonl
-
-=== LLM Output:
- Q1 2024 Earnings Summary for Internal Strategy Briefing:
-
-**Revenue:**  
-Starbucks generated $9.4 billion in net revenues, up 8% year-over-year, reflecting solid growth across key markets.
-
-**Profit:**  
-Net income increased to $1.1 billion ($0.78 per share) from previous earnings of $0.68 per share in Q1 2023, indicating improved profitability.
-
-**Growth Drivers:**  
-- **Domestic Market:** North America experienced a 9% revenue increase driven by higher average tickets and increased store traffic.  
-- **International Markets:** International revenue grew 7%, with China leading the way, where same-store sales surged 11%.  
-- **Expansion:** The company opened 549 new stores globally, reaching over 38,000 locations.  
-- **Digital Investment:** Continued focus on digital platforms and mobile ordering has strengthened competitive positioning.
-
-**Geographic Performance:**  
-- **North America:** Strong growth with a 9% revenue increase.  
-- **International:** 7% growth overall, with notable strength in China (11% same-store sales growth).
-
-**Margins &amp; Outlook:**  
-Operating margin expanded by 40 basis points year-over-year. Starbucks reaffirmed its full-year guidance of high-single-digit revenue growth, emphasizing ongoing strategic investments.
-
-=== Running Unit Test...
-
-=== Test passed. Output contains all expected key points.
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
-</pre></div>
-</div>
-</div>
-</div>
 </section>
-<section id="case-2-generate-marketing-materials">
-<h3>Case 2: Generate marketing materials<a class="headerlink" href="#case-2-generate-marketing-materials" title="Permalink to this heading">#</a></h3>
+<section id="check-correctness">
+<h2>Check Correctness<a class="headerlink" href="#check-correctness" title="Permalink to this heading">#</a></h2>
+<p><img alt="test_scheme" src="_images/testing_scheme_v2.png" /></p>
 <ul class="simple">
-<li><p>Track changes in model output over time or when prompts/models change.</p></li>
+<li><p>Generate a Golden Set</p>
+<ul>
+<li><p>Manually curate a reference (golden) dataset</p></li>
+<li><p>Develop a function to extract reference data from a database</p></li>
 </ul>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Write a compelling headline for an email marketing campaign promoting a new rewards credit card for young professionals. Focus on travel perks, no annual fee, and cash back.&quot;&quot;&quot;</span>
-
-<span class="n">expected_phrases</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;travel&quot;</span><span class="p">,</span> <span class="s2">&quot;no annual fee&quot;</span><span class="p">,</span> <span class="s2">&quot;cash back&quot;</span><span class="p">]</span>
-
-<span class="c1"># Run on two model versions</span>
-<span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-4.1-nano&quot;</span>
-<span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.7</span>
-<span class="n">max_tokens</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
-<span class="n">test_summary_quality</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected_phrases</span><span class="p">)</span>
-
-<span class="n">llm_model</span> <span class="o">=</span> <span class="s2">&quot;gpt-3.5-turbo&quot;</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">llm_with_logging</span><span class="p">(</span><span class="n">test_prompt</span><span class="p">,</span> <span class="n">llm_model</span><span class="p">,</span> <span class="n">llm_openai</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">max_tokens</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== LLM Output:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
-<span class="n">test_summary_quality</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected_phrases</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Logged interaction to logs/logfile_2025-07-01.jsonl
-
-=== LLM Output:
- Unlock Your Adventure: Earn Travel Perks, Cash Back, and No Annual Fee with Our New Rewards Credit Card!
-=== Test passed. Output contains all expected key points.
-Logged interaction to logs/logfile_2025-07-01.jsonl
-
-=== LLM Output:
- &quot;Unlock Your Next Adventure: Introducing the Ultimate Rewards Credit Card for Young Professionals&quot;
-=== Test failed. Missing key points:
- - travel
- - no annual fee
- - cash back
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>False
-</pre></div>
-</div>
-</div>
-</div>
+</li>
+<li><p>Comparison Techniques</p>
+<ul>
+<li><p><strong>Exact Match</strong>: Direct match for labels like True/False, multiple choice (A/B/C/D), or numeric values</p></li>
+<li><p><strong>Partial Match</strong>: Verify presence of key phrases within the response</p></li>
+<li><p><strong>Semantic Similarity</strong>: Compute cosine similarity between embedding vectors to assess meaning-based closeness</p></li>
+</ul>
+</li>
+</ul>
 </section>
-<section id="case-3-check-classification-outcome">
-<h3>Case 3: Check classification outcome<a class="headerlink" href="#case-3-check-classification-outcome" title="Permalink to this heading">#</a></h3>
+<section id="lab-2-extract-severance-package-information-from-text">
+<h2>Lab 2: Extract severance package information from text<a class="headerlink" href="#lab-2-extract-severance-package-information-from-text" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Adopt embedding to compare similarity</p></li>
+<li><p>Testing strategy: Compare exact values</p></li>
+</ul>
+</section>
+<section id="lab-3-predict-product-category">
+<h2>Lab 3: Predict product category<a class="headerlink" href="#lab-3-predict-product-category" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Testing strategy 1: Compare strings between LLM response and golden set</p></li>
+<li><p>Testing strategy 2: Compute cosine similarity between embedding vectors to assess meaning-based closeness</p></li>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -744,16 +553,16 @@ Logged interaction to logs/logfile_2025-07-01.jsonl
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Logged interaction to logs/logfile_2025-07-01.jsonl
-Logged interaction to logs/logfile_2025-07-01.jsonl
-Logged interaction to logs/logfile_2025-07-01.jsonl
-Logged interaction to logs/logfile_2025-07-01.jsonl
-Logged interaction to logs/logfile_2025-07-01.jsonl
-Logged interaction to logs/logfile_2025-07-01.jsonl
-Logged interaction to logs/logfile_2025-07-01.jsonl
-Logged interaction to logs/logfile_2025-07-01.jsonl
-Logged interaction to logs/logfile_2025-07-01.jsonl
-Logged interaction to logs/logfile_2025-07-01.jsonl
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Logged interaction to logs/logfile_2025-07-03.jsonl
+Logged interaction to logs/logfile_2025-07-03.jsonl
+Logged interaction to logs/logfile_2025-07-03.jsonl
+Logged interaction to logs/logfile_2025-07-03.jsonl
+Logged interaction to logs/logfile_2025-07-03.jsonl
+Logged interaction to logs/logfile_2025-07-03.jsonl
+Logged interaction to logs/logfile_2025-07-03.jsonl
+Logged interaction to logs/logfile_2025-07-03.jsonl
+Logged interaction to logs/logfile_2025-07-03.jsonl
+Logged interaction to logs/logfile_2025-07-03.jsonl
 </pre></div>
 </div>
 </div>
@@ -791,21 +600,20 @@ Logged interaction to logs/logfile_2025-07-01.jsonl
 9     e-reader / electronic book reader            e-reader  False   
 
    cosine_similarity  
-0           0.894264  
+0           0.894293  
 1           0.519339  
 2           0.999999  
-3           0.821989  
+3           0.821964  
 4           0.788420  
 5           0.900429  
-6           0.909726  
-7           0.795663  
-8           0.737094  
-9           0.882975  
+6           0.909701  
+7           0.795692  
+8           0.736998  
+9           0.882947  
 </pre></div>
 </div>
 </div>
 </div>
-</section>
 </section>
 </section>
 
@@ -863,12 +671,10 @@ Logged interaction to logs/logfile_2025-07-01.jsonl
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#llm-testing-list">LLM Testing List</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-extract-infrmation-from-earning-report">Case 1: Extract infrmation from earning report</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-generate-marketing-materials">Case 2: Generate marketing materials</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-3-check-classification-outcome">Case 3: Check classification outcome</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#llm-testing-list">LLM Testing List</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-correctness">Check Correctness</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lab-2-extract-severance-package-information-from-text">Lab 2: Extract severance package information from text</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lab-3-predict-product-category">Lab 3: Predict product category</a></li>
 </ul>
   </nav></div>
 
