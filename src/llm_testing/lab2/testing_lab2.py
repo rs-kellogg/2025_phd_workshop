@@ -4,7 +4,18 @@ from pathlib import Path
 from typing import List
 import datetime
 import json
+from pydantic import BaseModel
+import pandas as pd
 
+#########
+# Schema
+#########
+
+class Severance(BaseModel):
+    exec_name: str
+    date: str
+    severance_amount: str
+    other_perks: str
 
 
 def llm_openai(prompt, llm_model, temperature, max_tokens):
@@ -14,7 +25,7 @@ def llm_openai(prompt, llm_model, temperature, max_tokens):
     api_key = Path("./openai.key").read_text().strip()
     client = OpenAI(api_key=api_key)
 
-    completion = client.chat.completions.create(
+    completion = client.chat.completions.parse(
         model=llm_model,
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
@@ -23,8 +34,11 @@ def llm_openai(prompt, llm_model, temperature, max_tokens):
         temperature=temperature,
         max_completion_tokens=max_tokens,
         seed=42,
+        response_format=Severance,
     )   
-    return completion.choices[0].message.content
+
+    # print(completion.choices[0].message.content)
+    return completion.choices[0].message.parsed
 
 
 
@@ -58,7 +72,7 @@ def llm_with_logging(prompt, llm_model, llm_func, temperature, max_tokens):
         "temperature": temperature,
         "max_tokens": max_tokens,
         "prompt": prompt,
-        "output": output,
+        "output": str(output),
     }
 
     with open(output_file, "a") as f:
@@ -71,24 +85,25 @@ def llm_with_logging(prompt, llm_model, llm_func, temperature, max_tokens):
 
 if __name__ == "__main__":
 
-    prompt = """Write a compelling headline for an email marketing campaign promoting a new rewards credit card for young professionals. Focus on travel perks, no annual fee, and cash back."""
+    data_path = Path("./data")
+    files_list = list(data_path.glob("*.txt"))
 
-    # # read promt from a file
-    # file_prompt = "prompt.txt"
-    # with open(file_prompt, "r") as f:
-    #     prompt = f.read().strip()
+    prompt_list = []
+    for file in files_list:
+        with open(file, "r") as f:
+            prompt_list.append(f.read().strip())
 
-    llm_model_list = [
-        "gpt-4.1",
-        "gpt-4.1-mini",
-        "gpt-4.1-nano",
-        "gpt-4o",
-        # "o4-mini",
-        # "o3",
-    ]
+    llm_model = "gpt-4.1"
+    # llm_model = "gpt-4o"
 
-    for llm_model in llm_model_list:
+    df = pd.DataFrame()
+    for prompt in prompt_list[:1]:
         temperature = 1.0
         max_tokens = 500
         output = llm_with_logging(prompt, llm_model, llm_openai, temperature, max_tokens)
+
+        new_row = pd.DataFrame([output.model_dump()])
+        df = pd.concat([df, new_row], ignore_index=True)
+
+    df.to_csv("output.csv", index=False)
     
