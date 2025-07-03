@@ -15,10 +15,11 @@ class Severance(BaseModel):
     exec_name: str
     date: str
     severance_amount: str
+    severance_amount_text_description: str
     other_perks: str
 
 
-def llm_openai(prompt, llm_model, temperature, max_tokens):
+def llm_openai_schema(prompt, llm_model, temperature, max_tokens):
     """Call OpenAI ChatCompletion API and return output text."""
 
     # Set your OpenAI API key as an environment variable before running
@@ -88,22 +89,30 @@ if __name__ == "__main__":
     data_path = Path("./data")
     files_list = list(data_path.glob("*.txt"))
 
+    prompt_file = "prompt.txt"
+    with open(prompt_file, "r") as f:
+        prompt_main = f.read().strip()
+    prompt_main = ""
+
     prompt_list = []
     for file in files_list:
         with open(file, "r") as f:
-            prompt_list.append(f.read().strip())
+            prompt_list.append(f"{prompt_main}{f.read().strip()}")
 
     llm_model = "gpt-4.1"
     # llm_model = "gpt-4o"
 
+    # Generate outputs for each prompt
     df = pd.DataFrame()
-    for prompt in prompt_list[:1]:
+    # for prompt in prompt_list[:1]:
+    for prompt in prompt_list:
         temperature = 1.0
         max_tokens = 500
-        output = llm_with_logging(prompt, llm_model, llm_openai, temperature, max_tokens)
+        output = llm_with_logging(prompt, llm_model, llm_openai_schema, temperature, max_tokens)
 
         new_row = pd.DataFrame([output.model_dump()])
         df = pd.concat([df, new_row], ignore_index=True)
 
     df.to_csv("output.csv", index=False)
     
+    # df
