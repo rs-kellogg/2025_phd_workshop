@@ -83,16 +83,49 @@ def llm_with_logging(prompt, llm_model, llm_func, temperature, max_tokens):
     return output
 
 
+def fuzzy_string_match(str1, str2):
+    """
+    Compares two strings by converting them to lowercase and checking for substring presence.
+    Returns True if one string is a substring of the other, case-insensitively.
+    """
+    s1_lower = str(str1).lower()
+    s2_lower = str(str2).lower()
+    return s1_lower in s2_lower or s2_lower in s1_lower
+
+def test_severance(df, df_ref):
+    # iterate through df, use fuzzy_string_match to compare the column of exec_name columns of df and df_ref. When a match is found, compare to see if the "severance_amount" values are the same. Need to remove $ and , in the df["severance_amount"]. If the agree, print name and pass message, if not print name and values
+    for idx, row in df.iterrows():
+        exec_name = row["exec_name"]
+        severance_amount = str(row["severance_amount"]).replace("$", "").replace(",", "").replace("nan", "0").replace("N/A", "0")
+        severance_amount = int(severance_amount)  
+        
+        match_found = False
+        for idx_ref, row_ref in df_ref.iterrows():
+            if fuzzy_string_match(exec_name, row_ref["exec_name"]):
+                match_found = True
+                ref_severance_amount = str(row_ref["severance_amount"]).replace("$", "").replace(",", "")
+                ref_severance_amount = int(ref_severance_amount)
+                
+                if severance_amount == ref_severance_amount:
+                    print(f"=== Match found for {exec_name}: Severance amounts agree: {severance_amount}")
+                else:
+                    print(f"=== Match found for {exec_name}: Severance amounts disagree: {severance_amount} vs {ref_severance_amount}")
+                break
+        
+        if not match_found:
+            print(f"=== No match found for {exec_name}.")
+
+
 
 if __name__ == "__main__":
 
     data_path = Path("./data")
     files_list = list(data_path.glob("*.txt"))
 
-    # prompt_file = "prompt.txt"
-    # with open(prompt_file, "r") as f:
-    #     prompt_main = f.read().strip()
-    prompt_main = ""
+    prompt_file = "prompt.txt"
+    with open(prompt_file, "r") as f:
+        prompt_main = f.read().strip()
+    # prompt_main = ""
 
     prompt_list = []
     for file in files_list:
@@ -100,19 +133,28 @@ if __name__ == "__main__":
             prompt_list.append(f"{prompt_main}{f.read().strip()}")
 
     llm_model = "gpt-4.1"
-    # llm_model = "gpt-4o"
 
-    # Generate outputs for each prompt
-    df = pd.DataFrame()
-    # for prompt in prompt_list[:1]:
-    for prompt in prompt_list:
-        temperature = 1.0
-        max_tokens = 500
-        output = llm_with_logging(prompt, llm_model, llm_openai_schema, temperature, max_tokens)
+    output_file = Path("./output-v5.csv")
 
-        new_row = pd.DataFrame([output.model_dump()])
-        df = pd.concat([df, new_row], ignore_index=True)
+    if output_file.exists():
+        print(f"Output file {output_file} already exists. Skip LLM model. Start testing...")
+        df = pd.read_csv(output_file)
+    else:
+        print(f"Output file {output_file} does not exist. Running LLM query...")
+        # Generate outputs for each prompt
+        df = pd.DataFrame()
+        # for prompt in prompt_list[:1]:
+        for prompt in prompt_list:
+            temperature = 1.0
+            max_tokens = 500
+            output = llm_with_logging(prompt, llm_model, llm_openai_schema, temperature, max_tokens)
 
-    df.to_csv("output.csv", index=False)
+            new_row = pd.DataFrame([output.model_dump()])
+            df = pd.concat([df, new_row], ignore_index=True)
+
+        df.to_csv(output_file, index=False)
     
-    # df
+    ref_file = Path("./ref.csv")
+    df_ref = pd.read_csv(ref_file)
+
+    test_severance(df, df_ref)
