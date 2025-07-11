@@ -1,7 +1,6 @@
 from openai import OpenAI
 import os
 from pathlib import Path
-from typing import List
 import datetime
 import json
 
@@ -46,7 +45,6 @@ def llm_with_logging(prompt, llm_model, llm_func, temperature, max_tokens):
     
     now = datetime.datetime.now()
     date_str = now.date().isoformat()
-    timestamp_str = now.strftime("%Y%m%d-%H%M%S")
     
     output_file = os.path.join(log_dir, f"logfile_{date_str}.jsonl")
 
@@ -82,9 +80,7 @@ if __name__ == "__main__":
         "gpt-4.1",
         "gpt-4.1-mini",
         "gpt-4.1-nano",
-        "gpt-4o",
-        # "o4-mini",
-        # "o3",
+        # "gpt-4o",
     ]
 
     for llm_model in llm_model_list:

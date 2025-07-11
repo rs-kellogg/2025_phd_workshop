@@ -1,7 +1,6 @@
 from openai import OpenAI
 import os
 from pathlib import Path
-from typing import List
 import datetime
 import json
 import pandas as pd
@@ -49,7 +48,6 @@ def llm_with_logging(prompt, llm_model, llm_func, temperature, max_tokens):
     
     now = datetime.datetime.now()
     date_str = now.date().isoformat()
-    timestamp_str = now.strftime("%Y%m%d-%H%M%S")
     
     output_file = os.path.join(log_dir, f"logfile_{date_str}.jsonl")
 
@@ -133,10 +131,9 @@ def evaluate_product_classification(df):
         results.append({
             "product_name": product,
             "gold_category": gold_category,
-            # "llm_response": llm_output,
             "llm_predicted_category": predicted_category,
             "match_string": match,
-            "cosine_similarity": similarity
+            "cosine_similarity": round(similarity, 2)
         })
 
     return pd.DataFrame(results)
@@ -151,28 +148,27 @@ if __name__ == "__main__":
             "Keurig K-Supreme Plus SMART",
             "iPhone 15 Pro Max",
             "YETI Rambler 20 oz Tumbler",
-            "Sony WH-1000XM5",
-            "Blue Diamond Almonds - Lightly Salted",
-            "Peloton Bike+",
-            "Nest Thermostat (3rd Gen)",
-            "L'Oréal Paris Revitalift Serum",
-            "Kindle Paperwhite Signature Edition"
+            # "Sony WH-1000XM5",
+            # "Blue Diamond Almonds - Lightly Salted",
+            # "Peloton Bike+",
+            # "Nest Thermostat (3rd Gen)",
+            # "L'Oréal Paris Revitalift Serum",
+            # "Kindle Paperwhite Signature Edition"
         ],
         "ground_truth_category": [
-            "vacuum cleaner",
-            "coffee maker",
+            "vacuum stick",
+            "coffee machine",
             "smartphone",
-            "drinkware",
-            "headphones",
-            "snack",
-            "exercise equipment",
-            "smart home device",
-            "skincare",
-            "e-reader"
+            "tumbler",
+            # "headphones",
+            # "snack",
+            # "exercise equipment",
+            # "smart home device",
+            # "skincare",
+            # "e-reader"
         ]
     })
 
-    # prompt = """Classify the following product into a specific consumer product category similar to how Amazon categorizes products. 
     prompt = """Classify the following product into a specific consumer product category. 
     Reply in the format: 
     Category: <your category>
@@ -185,30 +181,33 @@ if __name__ == "__main__":
     temperature = 0.1
     max_tokens = 1000
 
-    output_file = "product_classification_results.csv"
+    now = datetime.datetime.now()
+    timestamp = now.strftime("%Y%m%d_%H%M")
+    output_folder = Path(f"./output_{timestamp}")
+    output_folder.mkdir(exist_ok=True)
+    output_file = output_folder / "./product_classification_results.csv"
+    testing_output_file = output_folder / "./product_classification_results_testing.csv"
 
-    # LLM evaluation
-    df_results = df_products.copy()
-    for _, row in df_results.iterrows():
+    if output_file.exists():
+        print(f"Output file {output_file} already exists. Skipping LLM evaluation.")
+    else:
+        # LLM evaluation
+        df_results = df_products.copy()
+        for _, row in df_results.iterrows():
 
-        product = row["product_name"]
-        user_prompt = f"{prompt} {product}\n"
+            product = row["product_name"]
+            user_prompt = f"{prompt} {product}\n"
 
-        llm_output = llm_with_logging(user_prompt, llm_model, llm_openai, temperature, max_tokens)
+            llm_output = llm_with_logging(user_prompt, llm_model, llm_openai, temperature, max_tokens)
 
-        df_results.loc[_, "llm_response"] = llm_output
+            row["llm_response"] = llm_output
+            row_df = pd.DataFrame([row])
+            header = not output_file.exists()
+            row_df.to_csv(output_file, mode='a', header=header, index=False)
 
-    df_results.to_csv(output_file, index=False)
+    df_results = pd.read_csv(output_file)
 
     # Testing
-    # df_results = pd.read_csv(output_file)
     df_testing = evaluate_product_classification(df_results)
-
-    testing_output_file = "product_classification_testing_results.csv"
     df_testing.to_csv(testing_output_file, index=False)
         
-
-
-
-
-

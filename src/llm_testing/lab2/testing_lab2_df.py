@@ -78,43 +78,29 @@ def llm_with_logging(prompt, llm_model, llm_func, temperature, max_tokens):
         f.write(json.dumps(log_entry) + "\n")
 
     print(f"... Adding logs to {output_file}")
+
     return output
 
-
-def fuzzy_string_match(str1, str2):
-    """
-    Compares two strings by converting them to lowercase and checking for substring presence.
-    Returns True if one string is a substring of the other, case-insensitively.
-    """
-    s1_lower = str(str1).lower()
-    s2_lower = str(str2).lower()
-    return s1_lower in s2_lower or s2_lower in s1_lower
 
 def extract_int(val):
         val = str(val).replace("$", "").replace(",", "").replace("nan", "0").replace("N/A", "0")
         val_int = int(val)  
         return val_int
 
+
 def test_severance(df, df_ref):
 
-    for idx, row in df.iterrows():
-        exec_name = row["exec_name"]
-        severance_amount = extract_int(row["severance_amount"])
-        
-        match_found = False
-        for idx_ref, row_ref in df_ref.iterrows():
-            if fuzzy_string_match(exec_name, row_ref["exec_name"]):
-                match_found = True
-                ref_severance_amount = extract_int(row_ref["severance_amount"])
-                
-                if severance_amount == ref_severance_amount:
-                    print(f"=== Match found for {exec_name}: Severance amounts agree: {severance_amount}")
-                else:
-                    print(f"=== Match found for {exec_name}: Severance amounts disagree: {severance_amount} vs {ref_severance_amount}")
-                break
-        
-        if not match_found:
-            print(f"=== No match found for {exec_name}.")
+    df_merge = pd.merge(df, df_ref, on="filename", how="inner", suffixes=("", "_ref"))
+
+    # compare the value of severance_amount and severance_amount_ref, create a new column "severance_amount_match"
+    df_merge["severance_amount_match"] = df_merge.apply(
+        lambda row: extract_int(row["severance_amount"]) == extract_int(row["severance_amount_ref"]),
+        axis=1
+    )
+
+    df_merge.drop(columns=["text", "severance_amount_text_description", "other_perks"], inplace=True)
+
+    return df_merge
 
 
 
@@ -130,10 +116,13 @@ if __name__ == "__main__":
     # Read data text files
     prompt_list = []
     files_list = list(data_path.glob("*.txt"))
-    files_list.sort()  # Sort files to ensure consistent order
+    df = pd.DataFrame()
     for file in files_list:
+        row = dict()
+        row["filename"] = file.name
         with open(file, "r") as f:
-            prompt_list.append(f"{prompt_main}{f.read().strip()}")
+            row["text"]= f"{prompt_main}{f.read().strip()}"
+        df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)
 
     llm_model = "gpt-4.1"
 
@@ -141,29 +130,33 @@ if __name__ == "__main__":
     timestamp = now.strftime("%Y%m%d_%H%M")
     output_folder = Path(f"./output_{timestamp}")
     output_folder.mkdir(exist_ok=True)
-    output_file = output_folder / "./output.csv"
+    output_file = output_folder / "output.csv"
+    output_testing_file = output_folder / "output_testing.csv"
 
     if output_file.exists():
         print(f"Output file {output_file} already exists. Skip LLM model. Start testing...")
-        # df = pd.read_csv(output_file)
     else:
         print(f"Output file {output_file} does not exist. Running LLM query...")
 
         # Generate outputs for each prompt
-        for prompt in prompt_list:
+        for idx, row in df.iterrows():
             temperature = 1.0
             max_tokens = 500
-            output = llm_with_logging(prompt, llm_model, llm_openai_schema, temperature, max_tokens)
+            output = llm_with_logging(row["text"], llm_model, llm_openai_schema, temperature, max_tokens)
 
-            new_row = pd.DataFrame([output.model_dump()])
+            output_dict = output.model_dump()
+            new_row = pd.DataFrame([{**row.to_dict(), **output_dict}])
+
             if output_file.exists():
                 new_row.to_csv(output_file, mode='a', header=False, index=False)
             else:
                 new_row.to_csv(output_file, mode='w', header=True, index=False)
 
+    # Testing
     df = pd.read_csv(output_file)
     
     ref_file = Path("./data/ref.csv")
     df_ref = pd.read_csv(ref_file)
 
-    test_severance(df, df_ref)
+    df_testing = test_severance(df, df_ref)
+    df_testing.to_csv(output_testing_file, index=False)
