@@ -1,6 +1,6 @@
 # 2025_phd_workshop
 
-- Workshop GitHub Repo
+- Workshop GitHub Repo  
 https://github.com/rs-kellogg/2025_phd_workshop
 
 - [Official KLC Website](https://www.kellogg.northwestern.edu/academics-research/research-support/computing/kellogg-linux-cluster/)
