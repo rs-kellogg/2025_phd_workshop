@@ -7,3 +7,10 @@ if len(sys.argv) != 2:
 
 name = sys.argv[1]
 cowsay.cow(f"helllo {name}! Great work today!")
+
+# sleep for 1 minute
+import time
+time.sleep(60)
+
+cowsay.cow(f"Wake up now!")
+
