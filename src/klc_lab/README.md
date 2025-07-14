@@ -3,7 +3,7 @@
 
 - [Data](https://github.com/rs-kellogg/book_scrape/blob/main/data/books_list.csv)
 
-- [Script](https://github.com/rs-kellogg/book_scrape/blob/main/scripts/dl_book_pages_demo.py)
+- [Script](https://github.com/rs-kellogg/2025_phd_workshop/blob/main/src/klc_lab/src/dl_book_pages_demo.py)
 
 - Python Conda environment for this exercise
 ```
