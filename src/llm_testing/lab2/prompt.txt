@@ -1,2 +1,0 @@
-Extract the exact value for severance_amount. Put 0 if no severance is paid. If no information is found, state 'N/A'. 
-For severance_amount_text_description, provide the exact text string from the input text where the severance amount was found.
