@@ -7,11 +7,5 @@ parts:
 - caption: LLM Applications
   numbered: false
   chapters:
-  - file: llm_extract
-  - file: llm_simulate
   - file: llm_versioning
   - file: llm_testing
-
-
-  
-
