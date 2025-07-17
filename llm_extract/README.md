@@ -7,7 +7,9 @@ https://rs-kellogg.github.io/2025_phd_workshop/llm_versioning.html](https://rs-k
 https://github.com/rs-kellogg/2025_phd_workshop)s/llm_extract/code`
 
 - Datasets 
+
 `/kellogg/data/workshop_examples/enron_emails`
+
 `/kellogg/data/workshop_examples/protest`
 
 
