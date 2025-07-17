@@ -1,7 +1,7 @@
 # LLM Extract Workshop
 
 - Slides  
-https://rs-kellogg.github.io/llm_extract/reproduce.html
+https://rs-kellogg.github.io/llm_extract/
 
 - Sample Code  
 https://github.com/rs-kellogg/2025_phd_workshop)s/llm_extract/code`
