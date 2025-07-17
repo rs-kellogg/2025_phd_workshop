@@ -36,7 +36,7 @@ prompt2 = "Tell me about one prominent person running for mayor of New York City
 prompt3 = "Identify ONE mayoral candidate for the New York City election in 2025 and their political party. Output in JSON format with 'candidate_name' and 'political_party'."
 
 # outputs
-output_dir = "/home/<your_net_id>/llm_extract/reproducible_output"
+output_dir = "/home/<your_net_id>/2025_phd_workshop/llm_extract/reproducible_output"
 results_track = os.path.join(output_dir, "mayor_results_track.csv")
 
 #########
