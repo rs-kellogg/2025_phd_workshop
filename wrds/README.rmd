@@ -1,4 +1,4 @@
-For the WRDS Workshop, please: 
+## For the WRDS Workshop, please: 
 
 - Register for a WRDS account here: https://wrds-www.wharton.upenn.edu/register/
 - Login and enable two-factor-authentication
