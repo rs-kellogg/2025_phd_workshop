@@ -1,5 +1,5 @@
 
-## 📊 WRDS Workshop Instructions
+# 📊 WRDS Workshop Instructions
 
 ### ✅ Before the workshop
 - Register for a WRDS account:  
