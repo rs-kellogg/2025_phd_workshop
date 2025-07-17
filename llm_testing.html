@@ -430,8 +430,37 @@ document.write(`
 </section>
 <section id="lab-2-extract-severance-package-information-from-text">
 <h2>Lab 2: Extract severance package information from text<a class="headerlink" href="#lab-2-extract-severance-package-information-from-text" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
+<ul>
 <li><p>Testing strategy: Compare exact values</p></li>
+<li><p>Go to lab2 folder</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../lab2
+</pre></div>
+</div>
+</li>
+<li><p>Draft your prompt</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>src/prompt.txt
+</pre></div>
+</div>
+</li>
+<li><p>Create your own <code class="docutils literal notranslate"><span class="pre">lab2/data/ref.csv</span></code> with two columns <code class="docutils literal notranslate"><span class="pre">filename</span></code> and <code class="docutils literal notranslate"><span class="pre">severance_amount_ref</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>data/ref.csv
+</pre></div>
+</div>
+</li>
+<li><p>Scavenger hunt in <code class="docutils literal notranslate"><span class="pre">lab2/src/testing_lab2.py</span></code>:</p>
+<ul class="simple">
+<li><p>Set up output format</p></li>
+<li><p>Create original dataframe</p></li>
+<li><p>Loading response</p></li>
+<li><p>Compare output</p></li>
+</ul>
+</li>
+<li><p>Execute script</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>src/testing_lab2.py
+</pre></div>
+</div>
+</li>
+<li><p>Check out output in the <code class="docutils literal notranslate"><span class="pre">./logs</span></code> and <code class="docutils literal notranslate"><span class="pre">./output_*</span></code> folder</p></li>
 </ul>
 </section>
 <section id="lab-3-predict-product-category">

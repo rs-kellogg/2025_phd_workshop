@@ -427,10 +427,56 @@ document.write(`
 <section id="lab-1-generate-marketing-materials">
 <h3>Lab 1: Generate marketing materials<a class="headerlink" href="#lab-1-generate-marketing-materials" title="Permalink to this heading">#</a></h3>
 <ul>
-<li><p>Track changes in model output over time or when prompts/models change.</p></li>
+<li><p>Copy files</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>/kellogg/data/workshop_examples/llm_testing<span class="w"> </span>~
+<span class="nb">cd</span><span class="w"> </span>llm_testing/lab1
+</pre></div>
+</div>
+</li>
+<li><p>Load Mamba environment</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module<span class="w"> </span>purge
+module<span class="w"> </span>load<span class="w"> </span>mamba
+<span class="nb">source</span><span class="w"> </span>activate<span class="w"> </span>/kellogg/software/envs/llm_testing_env
+</pre></div>
+</div>
+</li>
+<li><p>Save openai API key to KLC</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>~/keys/openai-key.txt
+</pre></div>
+</div>
+</li>
+<li><p>Track changes to scripts and prompts</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>code
+git<span class="w"> </span>init
+git<span class="w"> </span>add<span class="w"> </span>lab1
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;initial commit&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Run the script</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># run python script</span>
+python<span class="w"> </span>testing_lab1.py
+</pre></div>
+</div>
+</li>
+<li><p>Check out output in the <code class="docutils literal notranslate"><span class="pre">./logs</span></code> folder</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nano<span class="w"> </span>./logs/logfile_2025-07-18.jsonl
+</pre></div>
+</div>
+</li>
 <li><p>Modify to read prompt from file and add file to git</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>prompt.txt
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># edit files</span>
+nano<span class="w"> </span>testing_lab1.py
+nano<span class="w"> </span>prompt.txt
+git<span class="w"> </span>add<span class="w"> </span>prompt.txt
 git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;add prompt text file&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Check how git works for versioning</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>diff
+git<span class="w"> </span>status
+git<span class="w"> </span>log
 </pre></div>
 </div>
 </li>
