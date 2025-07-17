@@ -6,11 +6,11 @@ https://rs-kellogg.github.io/2025_phd_workshop/llm_versioning.html
 - Data  
 `/kellogg/data/workshop_examples/llm_testing`
 
-- Set up Mamba environment  
+- Load Mamba environment  
     ```bash
     module purge
     module load mamba
-    source activate /kellogg/software/envs/llm_extract_workshop
+    source activate /kellogg/software/envs/llm_testing_env
     ```
 
 - Save openai API key to KLC  
