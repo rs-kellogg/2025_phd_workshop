@@ -1,7 +1,7 @@
 # LLM Testing Workshop
 
-- Slides
+- Slides  
 https://rs-kellogg.github.io/2025_phd_workshop/llm_versioning.html
 
-- Data
+- Data  
 `/kellogg/data/workshop_examples/llm_testing`
