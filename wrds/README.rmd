@@ -1,12 +1,30 @@
-## For the WRDS Workshop, please: 
 
-- Register for a WRDS account here: https://wrds-www.wharton.upenn.edu/register/
-- Login and enable two-factor-authentication
+## 📊 WRDS Workshop Instructions
 
-Follow along with the jupyter book here: https://rs-kellogg.github.io/wrds_workshop_public/intro.html
-(Code for Lab Exercise Answers Shown During the Workshop will be uploaded right after)
+### ✅ Before the workshop
+- Register for a WRDS account:  
+  <https://wrds-www.wharton.upenn.edu/register/>
+- Login and enable two-factor authentication
 
-To follow along, connect to KLC in any of these ways:
+---
+
+### 📖 Follow along with the Jupyter Book
+[WRDS Workshop Jupyter Book](https://rs-kellogg.github.io/wrds_workshop_public/intro.html)
+
+> 💡 *Code for Lab Exercise Answers shown during the workshop will be uploaded right after.*
+
+---
+
+### 🖥 How to connect to KLC
+
+You can connect in any of these ways:
+
+#### (1) SSH from a Terminal
+For instance:
+
+```bash
+ssh <your_netid>@klc0303.quest.northwestern.edu
+
 
  (1) By "ssh-ing" to KLC from a Terminal
       - For instance:
